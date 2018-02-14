@@ -1,0 +1,100 @@
+<html>
+    <head>
+        <title>Timer</title>
+        <style>
+            body {
+                color: #FFFFFF;
+                text-align: center;
+
+            }
+
+            #clock {
+                display: block;
+                font-size: 380px;
+                font-weight: 700;
+                position: relative;
+                top: 300px;
+            }
+        </style>
+        <script>
+            var run = false;
+            var runSeconds = 600;
+            var seconds = runSeconds;
+            var waitColor = "#A8A8A8";
+            var runColor = "#1A3B69";
+            var doneColor = "#AC0000";
+    
+            function ToMMSS(s) {
+                var sec_num = parseInt(s, 10);
+                var minutes = Math.floor(sec_num / 60);
+                var seconds = sec_num - (minutes * 60);
+    
+                if (minutes < 10) {minutes = "0"+minutes;}
+                if (seconds < 10) {seconds = "0"+seconds;}
+                return minutes+':'+seconds;
+            }
+    
+            function Load() {
+                InitializeScreen();
+                
+                document.addEventListener('keydown', function(event) {
+                    if(event.keyCode == 32) {
+                        Toggle();
+                    }
+                });
+            }
+    
+            function InitializeScreen() {
+                run = false;
+                seconds = runSeconds;
+                var clockElement = document.getElementById("clock");
+                clockElement.innerHTML = ToMMSS(seconds);
+                document.body.style.backgroundColor = waitColor;
+            }
+    
+            function Toggle() {
+                if (run == false) {
+                    seconds = runSeconds;
+                    run = true;
+                    document.body.style.backgroundColor = runColor;
+                    Update();
+                } else {
+                    if (seconds == 0) {
+                        seconds = runSeconds;
+                        Update();
+                    } else {
+                        InitializeScreen();
+                    }
+                }
+            }
+    
+            function Update() {
+                if (run) {
+                    var clockElement = document.getElementById("clock");
+                    clockElement.innerHTML = ToMMSS(seconds);
+                    setTimeout(() => {
+                        seconds -= 1;
+                        if (seconds > 0) {
+                            Update();
+                        } else {
+                            Done();
+                        }
+                    }, 1000);
+                }
+            }
+    
+            function Done() {
+                run = false;
+                var clockElement = document.getElementById("clock");
+                clockElement.innerHTML = ToMMSS(seconds);
+                document.body.style.backgroundColor = doneColor;
+                setTimeout(() => {
+                    InitializeScreen();
+                }, 10000);
+            }
+        </script>
+    </head>
+    <body onload="Load()">
+        <span id="clock"></span>
+    </body>
+</html>
